@@ -1,0 +1,7 @@
+FRAMEWORK_SEARCH_PATHS = "$(PODS_ROOT)/Metawear-iOSAPI"
+GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
+HEADER_SEARCH_PATHS = "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/MBProgressHUD" "${PODS_ROOT}/Headers/Public/Metawear-iOSAPI" "${PODS_ROOT}/Headers/Public/NKOColorPickerView"
+OTHER_CFLAGS = $(inherited) -isystem "${PODS_ROOT}/Headers/Public" -isystem "${PODS_ROOT}/Headers/Public/MBProgressHUD" -isystem "${PODS_ROOT}/Headers/Public/Metawear-iOSAPI" -isystem "${PODS_ROOT}/Headers/Public/NKOColorPickerView"
+OTHER_LDFLAGS = -ObjC -l"Pods-ANCS-MBProgressHUD" -l"Pods-ANCS-Metawear-iOSAPI" -l"Pods-ANCS-NKOColorPickerView" -framework "CoreGraphics" -framework "Foundation" -framework "MetaWear" -framework "QuartzCore" -framework "UIKit"
+OTHER_LIBTOOLFLAGS = $(OTHER_LDFLAGS)
+PODS_ROOT = ${SRCROOT}/Pods
