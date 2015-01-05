@@ -22,6 +22,13 @@
 @implementation HomeViewController
 @synthesize logFilename = _logFilename;
 
+#pragma mark - Status Bar
+
+- (UIStatusBarStyle)preferredStatusBarStyle
+{
+    return UIStatusBarStyleLightContent;
+}
+
 - (NSString *)logFilename
 {
     if (!_logFilename) {
@@ -39,6 +46,13 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    //Set up navigation bar colors
+    self.navigationController.navigationBar.tintColor = ColorNavigationTint;
+    self.navigationController.navigationBar.barTintColor = ColorNavigationBarTint;
+    self.navigationController.navigationBar.translucent = TRUE;
+    [self.navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:ColorNavigationTitle,NSForegroundColorAttributeName, FontNavigationTitle, NSFontAttributeName, nil]];
+    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     
     // Load saved values and display
     self.notifications  = [[NSKeyedUnarchiver unarchiveObjectWithFile:self.logFilename] mutableCopy];

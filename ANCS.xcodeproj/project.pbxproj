@@ -52,6 +52,8 @@
 		40B1D2891A37D54F0051CBC6 /* NotificationEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationEntry.m; sourceTree = "<group>"; };
 		7330FD85CBC03144852B2443 /* Pods-ANCS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ANCS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ANCS/Pods-ANCS.debug.xcconfig"; sourceTree = "<group>"; };
 		AAEF1EEE8A4C5307CEE6DFCC /* Pods-ANCS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ANCS.release.xcconfig"; path = "Pods/Target Support Files/Pods-ANCS/Pods-ANCS.release.xcconfig"; sourceTree = "<group>"; };
+		D0A5E1BC1A5A41D30036662B /* ColorConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColorConstants.h; sourceTree = "<group>"; };
+		D0A5E1BD1A5A42100036662B /* ANCSPrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ANCSPrefixHeader.pch; sourceTree = "<group>"; };
 		D6A31F1B4EE60AF45BAC2F08 /* libPods-ANCS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ANCS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -97,6 +99,7 @@
 		40B1D2341A368FD00051CBC6 /* ANCS */ = {
 			isa = PBXGroup;
 			children = (
+				D0A5E1BC1A5A41D30036662B /* ColorConstants.h */,
 				40B1D2391A368FD00051CBC6 /* AppDelegate.h */,
 				40B1D23A1A368FD00051CBC6 /* AppDelegate.m */,
 				40B1D2881A37D54F0051CBC6 /* NotificationEntry.h */,
@@ -120,6 +123,7 @@
 			children = (
 				40B1D2361A368FD00051CBC6 /* Info.plist */,
 				40B1D2371A368FD00051CBC6 /* main.m */,
+				D0A5E1BD1A5A42100036662B /* ANCSPrefixHeader.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -427,8 +431,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_PREFIX_HEADER = ANCS/ANCSPrefixHeader.pch;
 				INFOPLIST_FILE = ANCS/Info.plist;
+				"INFOPLIST_PREFIX_HEADER[sdk=*]" = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -442,7 +449,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_PREFIX_HEADER = ANCS/ANCSPrefixHeader.pch;
 				INFOPLIST_FILE = ANCS/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -455,6 +464,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -474,6 +484,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",

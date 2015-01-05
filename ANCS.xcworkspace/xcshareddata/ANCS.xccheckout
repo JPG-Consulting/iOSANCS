@@ -14,6 +14,8 @@
 		<string>github.com:mbientlab/MetaWear-iOSAPIDev.git</string>
 		<key>B368223C85EEFB50A153AF7EAC2D9878E3EC9F8E</key>
 		<string>bitbucket.org:mbientlab/metawear-ancs-sample.git</string>
+		<key>C7C6F6AE4B44C64D8A3E5E04F656D3B995BCC356</key>
+		<string>https://github.com/mbientlab/ANCS</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>ANCS.xcworkspace</string>
@@ -22,16 +24,26 @@
 		<key>33BD130770F144DDA552D3D045088C35EC23D81C</key>
 		<string>../../MetaWear-iOSAPIDev</string>
 		<key>B368223C85EEFB50A153AF7EAC2D9878E3EC9F8E</key>
+		<string>../../metawear-ancs-sample</string>
+		<key>C7C6F6AE4B44C64D8A3E5E04F656D3B995BCC356</key>
 		<string>..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>bitbucket.org:mbientlab/metawear-ancs-sample.git</string>
+	<string>https://github.com/mbientlab/ANCS</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>B368223C85EEFB50A153AF7EAC2D9878E3EC9F8E</string>
+	<string>C7C6F6AE4B44C64D8A3E5E04F656D3B995BCC356</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>C7C6F6AE4B44C64D8A3E5E04F656D3B995BCC356</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ANCS</string>
+		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
