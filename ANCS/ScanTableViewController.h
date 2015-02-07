@@ -7,7 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MetaWear/MetaWear.h>
+
+@protocol ScanTableViewControllerDelegate;
 
 @interface ScanTableViewController : UITableViewController
+@property (nonatomic, assign) id<ScanTableViewControllerDelegate> delegate;
+@end
 
+
+@protocol ScanTableViewControllerDelegate <NSObject>
+- (void)scanTableViewController:(ScanTableViewController *)controller didSelectDevice:(MBLMetaWear *)device;
 @end
