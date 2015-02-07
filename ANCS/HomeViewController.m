@@ -8,26 +8,39 @@
 
 #import "HomeViewController.h"
 #import "NotificationViewController.h"
-#import "ScanTableViewController.h"
-#import "DeviceSettings.h"
-#import "MBProgressHUD.h"
 #import <MetaWear/MetaWear.h>
 
-@interface HomeViewController () <NotificationControllerDelegate, ScanTableViewControllerDelegate>
+@interface HomeViewController () <NotificationControllerDelegate>
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *connectBarButton;
 @property (weak, nonatomic) IBOutlet UILabel *identifierLabel;
 
 @property (nonatomic, strong) MBLMetaWear *device;
-@property (nonatomic, strong) DeviceSettings *configuration;
+@property (nonatomic, strong) NSMutableArray *notifications;
+@property (nonatomic, strong) NSString *logFilename;
 @end
 
 @implementation HomeViewController
+@synthesize logFilename = _logFilename;
 
 #pragma mark - Status Bar
 
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
     return UIStatusBarStyleLightContent;
+}
+
+- (NSString *)logFilename
+{
+    if (!_logFilename) {
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        if (paths.count) {
+            _logFilename = [NSString stringWithFormat:@"%@/logfile", paths[0]];
+        } else {
+            [[[UIAlertView alloc] initWithTitle:@"Error" message:@"Cannot find documents directory, logging not supported" delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil] show];
+            _logFilename = nil;
+        }
+    }
+    return _logFilename;
 }
 
 - (void)viewDidLoad
@@ -41,10 +54,26 @@
     [self.navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:ColorNavigationTitle,NSForegroundColorAttributeName, FontNavigationTitle, NSFontAttributeName, nil]];
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     
+    // Load saved values and display
+    self.notifications  = [[NSKeyedUnarchiver unarchiveObjectWithFile:self.logFilename] mutableCopy];
+    if (!self.notifications) {
+        self.notifications = [NSMutableArray array];
+    }
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    [self updateInterface];
+}
+
+
+- (void)updateInterface
+{
     [[MBLMetaWearManager sharedManager] retrieveSavedMetaWearsWithHandler:^(NSArray *array) {
         if (array.count) {
             self.device = array[0];
-            self.configuration = self.device.configuration;
             self.identifierLabel.text = self.device.identifier.UUIDString;
             self.connectBarButton.title = @"Remove";
         } else {
@@ -53,6 +82,7 @@
         }
         [self.tableView reloadData];
     }];
+    [self.tableView reloadData];
 }
 
 - (IBAction)connectPressed:(id)sender
@@ -62,73 +92,53 @@
     } else {
         MBLMetaWear *device = self.device;
         self.device = nil;
-        self.configuration = nil;
         
         [device connectWithHandler:^(NSError *error) {
-            [device deleteAllBonds];
-            [device setConfiguration:nil handler:nil];
+            // TODO: Should remove pairing info
+            [device resetDevice];
         }];
         [device forgetDevice];
         
-        self.connectBarButton.title = @"Connect";
-        self.identifierLabel.text = @"No MetaWear Paired";
+        [self updateInterface];
     }
 }
 
 - (IBAction)refreshPressed:(id)sender
 {
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    hud.labelText = @"Programming...";
-    
-    DeviceSettings *configuration = self.configuration.notifications.count ? self.configuration : nil;
     [self.device connectWithHandler:^(NSError *error) {
-        if (error) {
-            hud.labelText = error.localizedDescription;
-            [hud hide:YES afterDelay:2];
-        } else {
-            [self.device setConfiguration:configuration handler:^(NSError *error) {
-                if (error) {
-                    hud.labelText = error.localizedDescription;
-                    [hud hide:YES afterDelay:2];
-                } else {
-                    [hud hide:YES];
-                    [self.device disconnectWithHandler:nil];
-                }
-            }];
+        [self.device resetDevice];
+        if (self.notifications.count) {
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [self.device connectWithHandler:^(NSError *error) {
+                    if (!error) {
+                        for (NotificationEntry *entry in self.notifications) {
+                            [entry programToDevice:self.device];
+                        }
+                        [self.device disconnectWithHandler:nil];
+                    }
+                }];
+            });
         }
     }];
 }
 
 - (void)handleEntry:(NotificationEntry *)entry
 {
+    [NSKeyedArchiver archiveRootObject:self.notifications toFile:self.logFilename];
     [self.tableView reloadData];
-    // Program the device!
-    [self refreshPressed:nil];
+    
+    [entry programToDevice:self.device];
 }
 
 - (void)notificationController:(NotificationViewController *)controller didCreateNotification:(NotificationEntry *)entry
 {
-    [self.configuration.notifications addObject:entry];
+    [self.notifications addObject:entry];
     [self handleEntry:entry];
 }
 
 - (void)notificationController:(NotificationViewController *)controller didUpdateNotification:(NotificationEntry *)entry
 {
     [self handleEntry:entry];
-}
-
-- (void)scanTableViewController:(ScanTableViewController *)controller didSelectDevice:(MBLMetaWear *)device
-{
-    self.device = device;
-    self.configuration = device.configuration;
-    if (!self.configuration) {
-        self.configuration = [[DeviceSettings alloc] init];
-    }
-    
-    self.identifierLabel.text = device.identifier.UUIDString;
-    self.connectBarButton.title = @"Remove";
-    
-    [self.tableView reloadData];
 }
 
 #pragma mark - Table view data source
@@ -140,13 +150,13 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.configuration.notifications.count + 1;
+    return self.notifications.count + 1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell;
-    if (indexPath.row >= self.configuration.notifications.count) {
+    if (indexPath.row >= self.notifications.count) {
         cell = [tableView dequeueReusableCellWithIdentifier:@"AddNew" forIndexPath:indexPath];
         UILabel *label = (UILabel *)[cell viewWithTag:1];
         if (self.device) {
@@ -156,7 +166,7 @@
         }
     } else {
         cell = [tableView dequeueReusableCellWithIdentifier:@"NotificationEntry" forIndexPath:indexPath];
-        NotificationEntry *cur = self.configuration.notifications[indexPath.row];
+        NotificationEntry *cur = self.notifications[indexPath.row];
         
         UIImageView *picture = (UIImageView *)[cell viewWithTag:1];
         [picture setImage:cur.picture];
@@ -167,20 +177,22 @@
         UIView *color = [cell viewWithTag:3];
         color.backgroundColor = cur.color;
     }
+    
     return cell;
 }
+
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    if (indexPath.row >= self.configuration.notifications.count) {
+    if (indexPath.row >= self.notifications.count) {
         if (self.device) {
             [self performSegueWithIdentifier:@"ShowNotification" sender:nil];
         } else {
             [self connectPressed:nil];
         }
     } else {
-        NotificationEntry *selected = self.configuration.notifications[indexPath.row];
+        NotificationEntry *selected = self.notifications[indexPath.row];
         [self performSegueWithIdentifier:@"ShowNotification" sender:selected];
     }
 }
@@ -188,7 +200,7 @@
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // Return NO if you do not want the specified item to be editable.
-    return indexPath.row < self.configuration.notifications.count;
+    return indexPath.row < self.notifications.count;
 }
 
 // Override to support editing the table view.
@@ -196,15 +208,15 @@
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source
-        NotificationEntry *cur = self.configuration.notifications[indexPath.row];
-        [self.configuration.notifications removeObjectAtIndex:indexPath.row];
-        [self refreshPressed:nil];
+        NotificationEntry *cur = self.notifications[indexPath.row];
+        [cur eraseFromDevice:self.device];
         
+        [self.notifications removeObjectAtIndex:indexPath.row];
+        [NSKeyedArchiver archiveRootObject:self.notifications toFile:self.logFilename];
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
         [tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
     }
 }
-
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
@@ -212,9 +224,6 @@
         NotificationViewController *controller = segue.destinationViewController;
         controller.delegate = self;
         controller.entryToDisplay = sender;
-    } else if ([segue.destinationViewController isKindOfClass:[ScanTableViewController class]]) {
-        ScanTableViewController *controller = segue.destinationViewController;
-        controller.delegate = self;
     }
 }
 

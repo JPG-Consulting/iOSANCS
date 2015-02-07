@@ -16,4 +16,6 @@
 
 - (instancetype)initWithName:(NSString *)name color:(UIColor *)color picture:(UIImage *)picture;
 
+- (void)programToDevice:(MBLMetaWear *)device;
+- (void)eraseFromDevice:(MBLMetaWear *)device;
 @end

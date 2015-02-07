@@ -9,7 +9,6 @@
 #import "ScanTableViewController.h"
 #import <MetaWear/MetaWear.h>
 #import "MBProgressHUD.h"
-#import "DeviceSettings.h"
 
 @interface ScanTableViewController ()
 @property (nonatomic, strong) NSArray *devices;
@@ -88,14 +87,19 @@
     [self.selected.led setLEDOn:NO withOptions:1];
     if (buttonIndex == 1) {
         [self.selected rememberDevice];
-        if (self.delegate) {
-            [self.delegate scanTableViewController:self didSelectDevice:self.selected];
-        }
-        
-        [self.selected initiatePairing];
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self.selected disconnectWithHandler:nil];
+        MBLEvent *event = [self.selected.ancs eventWithCategoryIds:MBLANCSCategoryIDAny
+                                                          eventIds:MBLANCSEventIDNotificationAdded
+                                                        eventFlags:MBLANCSEventFlagAny
+                                                       attributeId:MBLANCSNotificationAttributeIDNone
+                                                     attributeData:nil
+                                                        identifier:nil];
+        [event startNotificationsWithHandler:^(id obj, NSError *error) {
+            
+        }];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [event stopNotifications];
             [self.navigationController popViewControllerAnimated:YES];
+            [self.selected disconnectWithHandler:nil];
         });
     } else {
         [self.selected disconnectWithHandler:nil];

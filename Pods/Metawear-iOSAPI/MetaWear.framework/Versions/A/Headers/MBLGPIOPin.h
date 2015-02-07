@@ -35,7 +35,6 @@
 
 #import <MetaWear/MBLConstants.h>
 @class MBLEvent;
-@class MBLData;
 
 typedef NS_OPTIONS(uint8_t, MBLPinConfiguration) {
     MBLPinConfigurationPullup = 0,
@@ -63,10 +62,6 @@ typedef NS_OPTIONS(uint8_t, MBLPinChangeType) {
  Set what pin state transitions trigger a changeEvent.
  */
 @property (nonatomic) MBLPinChangeType changeType;
-/**
- Set pull configuration for the pin
- */
-@property (nonatomic) MBLPinConfiguration configuration;
 
 
 /**
@@ -74,19 +69,6 @@ typedef NS_OPTIONS(uint8_t, MBLPinChangeType) {
  what state transitions trigger an event using the changeType property.
  */
 @property (nonatomic, strong, readonly) MBLEvent *changeEvent;
-/**
- Data representing the digital (0 or 1) value of the pin
- */
-@property (nonatomic, strong, readonly) MBLData *digitalValue;
-/**
- Data representing the analog value of the pin in volts
- */
-@property (nonatomic, strong, readonly) MBLData *analogAbsolute;
-/**
- Data representing the analog value of the pin as a ratio of the supply voltage
- */
-@property (nonatomic, strong, readonly) MBLData *analogRatio;
-
 
 /**
  Set a digital output GPIO Pin to a 1 or 0.
@@ -94,24 +76,25 @@ typedef NS_OPTIONS(uint8_t, MBLPinChangeType) {
  */
 - (void)setToDigitalValue:(BOOL)on;
 
-
-///----------------------------------
-/// @name Deprecated Functions
-///----------------------------------
+/**
+ Set input GPIO pin type.
+ @param type Pin configuration type
+ */
+- (void)configureType:(MBLPinConfiguration)type;
 
 /**
- @deprecated use configuration property instead
+ Read Analog value of GPIO Pin.
+ @param mode MBLAnalogReadModeFixed gives a reading in actual volts,
+ when MBLAnalogReadModeSupplyRatio is used, the numbers comes back [0, 1.0] where 0 indicates
+ then input is equal to ground, and 1.0 indicates the input is equal to the supply voltage
+ @param handler Callback once read is complete
  */
-- (void)configureType:(MBLPinConfiguration)type DEPRECATED_MSG_ATTRIBUTE("Use configuration property instead");
+- (void)readAnalogValueUsingMode:(MBLAnalogReadMode)mode handler:(MBLDecimalNumberHandler)handler;
 
 /**
- @deprecated use [analogAbsolute readWithHandler:] or [analogRatio readWithHandler:] instead
+ Read Digital value of GPIO Pin.
+ @param handler Callback once read is complete
  */
-- (void)readAnalogValueUsingMode:(MBLAnalogReadMode)mode handler:(MBLDecimalNumberHandler)handler DEPRECATED_MSG_ATTRIBUTE("Use [analogAbsolute readWithHandler:] or [analogRatio readWithHandler:] instead");
-
-/**
- @deprecated use [digitalValue readWithHandler:] instead
- */
-- (void)readDigitalValueWithHandler:(MBLBoolHandler)handler DEPRECATED_MSG_ATTRIBUTE("Use [digitalValue readWithHandler:] instead");
+- (void)readDigitalValueWithHandler:(MBLBoolHandler)handler;
 
 @end

@@ -1,6 +1,6 @@
 PODS:
   - MBProgressHUD (0.9)
-  - Metawear-iOSAPI (1.5.0)
+  - Metawear-iOSAPI (1.4.1)
   - NKOColorPickerView (0.2)
 
 DEPENDENCIES:
@@ -10,7 +10,7 @@ DEPENDENCIES:
 
 SPEC CHECKSUMS:
   MBProgressHUD: 2038dbcf3dce73215abed6001657043d53aa79a8
-  Metawear-iOSAPI: 244601b13f679a182c209cdc11f131a7b29965cc
+  Metawear-iOSAPI: d04aaa5ed43cf08977d176b763991639658643b5
   NKOColorPickerView: b4d32e1eedfcaeaec890f8301081ee030d49cffd
 
 COCOAPODS: 0.34.4

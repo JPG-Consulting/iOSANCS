@@ -18,7 +18,6 @@
 		40B1D2751A3692FD0051CBC6 /* NotificationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 40B1D2741A3692FD0051CBC6 /* NotificationViewController.m */; };
 		40B1D2871A377CC80051CBC6 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 40B1D2861A377CC80051CBC6 /* HomeViewController.m */; };
 		40B1D28A1A37D54F0051CBC6 /* NotificationEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = 40B1D2891A37D54F0051CBC6 /* NotificationEntry.m */; };
-		40D303A81A816A580072B487 /* DeviceSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 40D303A71A816A580072B487 /* DeviceSettings.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,8 +50,6 @@
 		40B1D2861A377CC80051CBC6 /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
 		40B1D2881A37D54F0051CBC6 /* NotificationEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationEntry.h; sourceTree = "<group>"; };
 		40B1D2891A37D54F0051CBC6 /* NotificationEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationEntry.m; sourceTree = "<group>"; };
-		40D303A61A816A580072B487 /* DeviceSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeviceSettings.h; sourceTree = "<group>"; };
-		40D303A71A816A580072B487 /* DeviceSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeviceSettings.m; sourceTree = "<group>"; };
 		7330FD85CBC03144852B2443 /* Pods-ANCS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ANCS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ANCS/Pods-ANCS.debug.xcconfig"; sourceTree = "<group>"; };
 		AAEF1EEE8A4C5307CEE6DFCC /* Pods-ANCS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ANCS.release.xcconfig"; path = "Pods/Target Support Files/Pods-ANCS/Pods-ANCS.release.xcconfig"; sourceTree = "<group>"; };
 		D0A5E1BC1A5A41D30036662B /* ColorConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColorConstants.h; sourceTree = "<group>"; };
@@ -107,8 +104,6 @@
 				40B1D23A1A368FD00051CBC6 /* AppDelegate.m */,
 				40B1D2881A37D54F0051CBC6 /* NotificationEntry.h */,
 				40B1D2891A37D54F0051CBC6 /* NotificationEntry.m */,
-				40D303A61A816A580072B487 /* DeviceSettings.h */,
-				40D303A71A816A580072B487 /* DeviceSettings.m */,
 				40B1D26C1A3692470051CBC6 /* ScanTableViewController.h */,
 				40B1D26D1A3692470051CBC6 /* ScanTableViewController.m */,
 				40B1D2731A3692FD0051CBC6 /* NotificationViewController.h */,
@@ -307,7 +302,6 @@
 				40B1D23B1A368FD00051CBC6 /* AppDelegate.m in Sources */,
 				40B1D28A1A37D54F0051CBC6 /* NotificationEntry.m in Sources */,
 				40B1D2381A368FD00051CBC6 /* main.m in Sources */,
-				40D303A81A816A580072B487 /* DeviceSettings.m in Sources */,
 				40B1D2751A3692FD0051CBC6 /* NotificationViewController.m in Sources */,
 				40B1D2871A377CC80051CBC6 /* HomeViewController.m in Sources */,
 			);

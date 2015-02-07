@@ -40,5 +40,4 @@
  */
 @interface MBLLogEntry : NSObject
 @property (nonatomic, strong, readonly) NSDate *timestamp;
-@property (nonatomic, strong, readonly) NSData *data;
 @end
