@@ -73,7 +73,7 @@
                                                    eventIds:MBLANCSEventIDNotificationAdded
                                                  eventFlags:MBLANCSEventFlagAny
                                                 attributeId:MBLANCSNotificationAttributeIDTitle
-                                              attributeData:@"Stephen"];//entry.name];
+                                              attributeData:entry.name];
         [event programCommandsToRunOnEvent:^{
             [device.led flashLEDColor:entry.color withIntensity:1.0 numberOfFlashes:5];
             [device.hapticBuzzer startHapticWithDutyCycle:255 pulseWidth:500 completion:nil];
