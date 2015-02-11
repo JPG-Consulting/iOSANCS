@@ -1,9 +1,9 @@
 /**
- * MetaWear.h
- * MetaWear
+ * DeviceSettings.h
+ * ANCS
  *
- * Created by Stephen Schiffli on 7/30/14.
- * Copyright 2014 MbientLab Inc. All rights reserved.
+ * Created by Stephen Schiffli on 2/3/15.
+ * Copyright 2015 MbientLab Inc. All rights reserved.
  *
  * IMPORTANT: Your use of this Software is limited to those specific rights
  * granted under the terms of a software license agreement between the user who
@@ -33,31 +33,8 @@
  * contact MbientLab Inc, at www.mbientlab.com.
  */
 
-#import <MetaWear/MBLAccelerometer.h>
-#import <MetaWear/MBLAccelerometerData.h>
-#import <MetaWear/MBLANCS.h>
-#import <MetaWear/MBLANCSEventData.h>
-#import <MetaWear/MBLConstants.h>
-#import <MetaWear/MBLData.h>
-#import <MetaWear/MBLDeviceInfo.h>
-#import <MetaWear/MBLEvent.h>
-#import <MetaWear/MBLGPIO.h>
-#import <MetaWear/MBLGPIOPin.h>
-#import <MetaWear/MBLHapticBuzzer.h>
-#import <MetaWear/MBLI2C.h>
-#import <MetaWear/MBLI2CData.h>
-#import <MetaWear/MBLiBeacon.h>
-#import <MetaWear/MBLLED.h>
-#import <MetaWear/MBLLogEntry.h>
-#import <MetaWear/MBLMechanicalSwitch.h>
-#import <MetaWear/MBLMetaWear.h>
-#import <MetaWear/MBLMetaWearManager.h>
-#import <MetaWear/MBLModule.h>
-#import <MetaWear/MBLNeopixel.h>
-#import <MetaWear/MBLNumericData.h>
-#import <MetaWear/MBLOrientationData.h>
-#import <MetaWear/MBLRegister.h>
-#import <MetaWear/MBLRMSAccelerometerData.h>
-#import <MetaWear/MBLTemperature.h>
-#import <MetaWear/MBLTemperatureData.h>
-#import <MetaWear/MBLTimer.h>
+#import <MetaWear/MetaWear.h>
+
+@interface DeviceSettings : NSObject <MBLRestorable>
+@property (nonatomic, strong, readonly) NSMutableArray *notifications;
+@end
