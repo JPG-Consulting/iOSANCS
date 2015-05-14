@@ -196,7 +196,6 @@
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source
-        NotificationEntry *cur = self.configuration.notifications[indexPath.row];
         [self.configuration.notifications removeObjectAtIndex:indexPath.row];
         [self refreshPressed:nil];
         
