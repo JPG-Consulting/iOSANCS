@@ -87,6 +87,16 @@
 {
     [self.selected.led setLEDOn:NO withOptions:1];
     if (buttonIndex == 1) {
+        if (!self.selected.ancs) {
+            [[[UIAlertView alloc] initWithTitle:@"Error"
+                                        message:@"This MetaWear does not have ANCS enabled"
+                                       delegate:nil
+                              cancelButtonTitle:@"Okay"
+                              otherButtonTitles:nil] show];
+            [self.selected disconnectWithHandler:nil];
+            return;
+        }
+        
         [self.selected rememberDevice];
         if (self.delegate) {
             [self.delegate scanTableViewController:self didSelectDevice:self.selected];
