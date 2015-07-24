@@ -63,6 +63,7 @@
         MBLMetaWear *device = self.device;
         self.device = nil;
         self.configuration = nil;
+        [self.tableView reloadData];
         
         [device connectWithHandler:^(NSError *error) {
             [device deleteAllBonds];
@@ -70,6 +71,7 @@
         }];
         [device forgetDevice];
         
+        [[[UIAlertView alloc] initWithTitle:@"Action Required" message:@"Go to Settings->Bluetooth and Forget the MetaWear device to complete removal" delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil] show];
         self.connectBarButton.title = @"Connect";
         self.identifierLabel.text = @"No MetaWear Paired";
     }
@@ -92,7 +94,6 @@
                     [hud hide:YES afterDelay:2];
                 } else {
                     [hud hide:YES];
-                    [self.device disconnectWithHandler:nil];
                 }
             }];
         }

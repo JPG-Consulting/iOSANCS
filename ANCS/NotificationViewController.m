@@ -39,6 +39,18 @@
     }
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"ihavebeenlaunched"]) {
+        [[NSUserDefaults standardUserDefaults] setObject:@1 forKey:@"ihavebeenlaunched"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        [[[UIAlertView alloc] initWithTitle:@"Notice" message:@"This app filters notifications by title.  The title is what shows up in bold font above the notification payload when looking at the notification dropdown.  The app makes a best guess as to what those names are for the contanct you select, but display formats are customizable so it can't be guaranteed to work." delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil] show];
+    }
+}
+
 - (IBAction)donePressed:(id)sender
 {
     if (self.entryToDisplay) {
@@ -73,6 +85,17 @@
     }
 }
 
+- (void)addElement:(ABPropertyID)elementId person:(ABRecordRef)person name:(NSMutableString *)name
+{
+    NSString *element = (__bridge NSString *)(ABRecordCopyValue(person, elementId));
+    if (element) {
+        if (name.length) {
+            [name appendString:@" "];
+        }
+        [name appendString:element];
+    }
+}
+
 - (void)selectedPerson:(ABRecordRef)person
 {
     if (person == nil) {
@@ -85,10 +108,21 @@
     } else {
         picture = [UIImage imageNamed:@"BlankProfile"];
     }
-    NSString *firstName = (__bridge NSString *)(ABRecordCopyValue(person, kABPersonFirstNameProperty));
-    NSString *lastName = (__bridge NSString *)(ABRecordCopyValue(person, kABPersonLastNameProperty));
-    NSString *fullName = [NSString stringWithFormat:@"%@ %@", firstName == nil ? @"" : firstName, lastName == nil ? @"" : lastName];
-    
+    NSString *fullName;
+    NSString *nickname = (__bridge NSString *)(ABRecordCopyValue(person, kABPersonNicknameProperty));
+    if (nickname) {
+        // The default contact display name is to perfer nickname if given
+        fullName = nickname;
+    } else {
+        // Otherwise compose full name from individual names
+        NSMutableString *name = [NSMutableString string];
+        [self addElement:kABPersonPrefixProperty person:person name:name];
+        [self addElement:kABPersonFirstNameProperty person:person name:name];
+        [self addElement:kABPersonMiddleNameProperty person:person name:name];
+        [self addElement:kABPersonLastNameProperty person:person name:name];
+        [self addElement:kABPersonSuffixProperty person:person name:name];
+        fullName = name;
+    }
     self.entryToDisplay = [[NotificationEntry alloc] initWithName:fullName color:self.colorPickerView.color picture:picture];
     self.createdNotification = YES;
     [self.doneButton setEnabled:YES];

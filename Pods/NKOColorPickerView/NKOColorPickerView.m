@@ -207,7 +207,7 @@ CGFloat const NKOPickerViewCrossHairshWidthAndHeight    = 38.f;
 
 - (UIColor*)_defaultTintColor
 {
-    return [[[[UIApplication sharedApplication] delegate] window] tintColor];
+    return [UIColor greenColor]; //[[[[UIApplication sharedApplication] delegate] window] tintColor];
 }
 
 #pragma mark - Touch Handling methods
