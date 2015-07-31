@@ -1,1 +1,0 @@
-../../../Target Support Files/NKOColorPickerView/NKOColorPickerView-umbrella.h
