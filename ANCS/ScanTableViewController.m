@@ -36,7 +36,7 @@
 #import "ScanTableViewController.h"
 #import <MetaWear/MetaWear.h>
 #import "MBProgressHUD.h"
-#import "DeviceSettings.h"
+#import "DeviceConfiguration.h"
 
 @interface ScanTableViewController ()
 @property (nonatomic, strong) NSArray *devices;
@@ -125,14 +125,16 @@
         }
         
         [self.selected rememberDevice];
-        if (self.delegate) {
-            [self.delegate scanTableViewController:self didSelectDevice:self.selected];
-        }
-        
-        [self.selected initiatePairing];
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self.navigationController popViewControllerAnimated:YES];
-        });
+        [self.selected setConfiguration:[[DeviceConfiguration alloc] init] handler:^(NSError *error) {
+            if (self.delegate) {
+                [self.delegate scanTableViewController:self didSelectDevice:self.selected];
+            }
+            
+            [self.selected.settings initiatePairing];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [self.navigationController popViewControllerAnimated:YES];
+            });
+        }];
     } else {
         [self.selected disconnectWithHandler:nil];
     }

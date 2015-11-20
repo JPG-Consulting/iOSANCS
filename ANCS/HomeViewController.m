@@ -36,7 +36,7 @@
 #import "HomeViewController.h"
 #import "NotificationViewController.h"
 #import "ScanTableViewController.h"
-#import "DeviceSettings.h"
+#import "DeviceConfiguration.h"
 #import "MBProgressHUD.h"
 #import <MetaWear/MetaWear.h>
 
@@ -45,7 +45,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *identifierLabel;
 
 @property (nonatomic, strong) MBLMetaWear *device;
-@property (nonatomic, strong) DeviceSettings *configuration;
 @end
 
 @implementation HomeViewController
@@ -71,7 +70,6 @@
     [[MBLMetaWearManager sharedManager] retrieveSavedMetaWearsWithHandler:^(NSArray *array) {
         if (array.count) {
             self.device = array[0];
-            self.configuration = self.device.configuration;
             self.identifierLabel.text = self.device.identifier.UUIDString;
             self.connectBarButton.title = @"Remove";
         } else {
@@ -89,11 +87,10 @@
     } else {
         MBLMetaWear *device = self.device;
         self.device = nil;
-        self.configuration = nil;
         [self.tableView reloadData];
         
         [device connectWithHandler:^(NSError *error) {
-            [device deleteAllBonds];
+            [device.settings deleteAllBonds];
             [device setConfiguration:nil handler:nil];
         }];
         [device forgetDevice];
@@ -109,7 +106,7 @@
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     hud.labelText = @"Programming...";
     
-    DeviceSettings *configuration = self.configuration.notifications.count ? self.configuration : nil;
+    DeviceConfiguration *configuration = self.device.configuration;
     [self.device connectWithHandler:^(NSError *error) {
         if (error) {
             hud.labelText = error.localizedDescription;
@@ -136,7 +133,8 @@
 
 - (void)notificationController:(NotificationViewController *)controller didCreateNotification:(NotificationEntry *)entry
 {
-    [self.configuration.notifications addObject:entry];
+    DeviceConfiguration *configuration = self.device.configuration;
+    [configuration.notifications addObject:entry];
     [self handleEntry:entry];
 }
 
@@ -148,11 +146,6 @@
 - (void)scanTableViewController:(ScanTableViewController *)controller didSelectDevice:(MBLMetaWear *)device
 {
     self.device = device;
-    self.configuration = device.configuration;
-    if (!self.configuration) {
-        self.configuration = [[DeviceSettings alloc] init];
-    }
-    
     self.identifierLabel.text = device.identifier.UUIDString;
     self.connectBarButton.title = @"Remove";
     
@@ -168,13 +161,16 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.configuration.notifications.count + 1;
+    DeviceConfiguration *configuration = self.device.configuration;
+    return configuration.notifications.count + 1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell;
-    if (indexPath.row >= self.configuration.notifications.count) {
+    DeviceConfiguration *configuration = self.device.configuration;
+
+    if (indexPath.row >= configuration.notifications.count) {
         cell = [tableView dequeueReusableCellWithIdentifier:@"AddNew" forIndexPath:indexPath];
         UILabel *label = (UILabel *)[cell viewWithTag:1];
         if (self.device) {
@@ -184,7 +180,7 @@
         }
     } else {
         cell = [tableView dequeueReusableCellWithIdentifier:@"NotificationEntry" forIndexPath:indexPath];
-        NotificationEntry *cur = self.configuration.notifications[indexPath.row];
+        NotificationEntry *cur = configuration.notifications[indexPath.row];
         
         UIImageView *picture = (UIImageView *)[cell viewWithTag:1];
         [picture setImage:cur.picture];
@@ -201,14 +197,15 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    if (indexPath.row >= self.configuration.notifications.count) {
+    DeviceConfiguration *configuration = self.device.configuration;
+    if (indexPath.row >= configuration.notifications.count) {
         if (self.device) {
             [self performSegueWithIdentifier:@"ShowNotification" sender:nil];
         } else {
             [self connectPressed:nil];
         }
     } else {
-        NotificationEntry *selected = self.configuration.notifications[indexPath.row];
+        NotificationEntry *selected = configuration.notifications[indexPath.row];
         [self performSegueWithIdentifier:@"ShowNotification" sender:selected];
     }
 }
@@ -216,7 +213,8 @@
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // Return NO if you do not want the specified item to be editable.
-    return indexPath.row < self.configuration.notifications.count;
+    DeviceConfiguration *configuration = self.device.configuration;
+    return indexPath.row < configuration.notifications.count;
 }
 
 // Override to support editing the table view.
@@ -224,7 +222,8 @@
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source
-        [self.configuration.notifications removeObjectAtIndex:indexPath.row];
+        DeviceConfiguration *configuration = self.device.configuration;
+        [configuration.notifications removeObjectAtIndex:indexPath.row];
         [self refreshPressed:nil];
         
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];

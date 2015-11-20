@@ -69,7 +69,13 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    
+ 
+    // in iOS 9 need address book access to pick a contact
+    ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL, NULL);
+    ABAddressBookRequestAccessWithCompletion(addressBook, ^(bool granted, CFErrorRef error) {
+        NSLog(@"Access to contacts %@ by user", granted ? @"granted" : @"denied");
+    });
+
     if (![[NSUserDefaults standardUserDefaults] objectForKey:@"ihavebeenlaunched"]) {
         [[NSUserDefaults standardUserDefaults] setObject:@1 forKey:@"ihavebeenlaunched"];
         [[NSUserDefaults standardUserDefaults] synchronize];
